@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <environments default="pos">
+        <environment id="cloud">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver" />
+                <property name="url" value="jdbc:mysql://172.31.1.153:3306/cloud_webmanager" />
+                <property name="username" value="cloud" />
+                <property name="password" value="tplinkcloud" />
+            </dataSource>
+        </environment>
+        <environment id="pos">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="org.sqlite.JDBC" />
+                <property name="url" value="jdbc:sqlite:E:/projects/posdata.db" />
+                <property name="username" value="" />
+                <property name="password" value="" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="chen/pos/welcome/mapper/UserMapper.xml" />
+        <mapper resource="chen/pos/welcome/mapper/ProductMapper.xml" />
+    </mappers>
+
+</configuration>
