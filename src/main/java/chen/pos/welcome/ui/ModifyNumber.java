@@ -22,6 +22,7 @@ public class ModifyNumber implements KeyListener {
 
     private static final String DELETE_LINE_PROMPT = "删除该商品？\n按Enter键确认，按Esc键取消";
     private static final String DELETE_ALL_PROMPT = "删除全部内容？\n按Enter键确认，按Esc键取消";
+    private static final String CHARGE_PROMPT = "应收取：%s元\n再按一次确认，按Esc键取消";
 
     public void keyTyped(KeyEvent e) {
         System.out.println("输入: keyCode: " + e.getKeyCode());
@@ -40,12 +41,16 @@ public class ModifyNumber implements KeyListener {
             isF11Pressed = true;
         } else if (keyCode == ENTER) {
             if (!isF11Pressed) {
-                return;
+                // add goods
+                GoodsPanel.getInstance().updateGoodsList();
+                InOutPanel.getInstance().getInput().setText("");
+            } else {
+                // modify number
+                GoodsPanel.getInstance().updateGoodsNumber();
+                InOutPanel.getInstance().changePromt2Barcode();
+                InOutPanel.getInstance().getInput().setText("");
+                isF11Pressed = false;
             }
-            GoodsPanel.getInstance().updateGoodsNumber();
-            InOutPanel.getInstance().changePromt2Barcode();
-            InOutPanel.getInstance().getInput().setText("");
-            isF11Pressed = false;
         } else if (keyCode == UP) {
             GoodsPanel.getInstance().setSelectedRow(-1);
         } else if (keyCode == DOWN) {
@@ -54,7 +59,13 @@ public class ModifyNumber implements KeyListener {
             if (GoodsPanel.getInstance().isGoodsListEmpty()) {
                 return;
             }
-            String charge = JOptionPane.showInputDialog("收取金额：");
+            int charge = JOptionPane.showConfirmDialog(null,
+                    String.format(CHARGE_PROMPT, InOutPanel.getInstance().getTotalValue()),
+                    "", JOptionPane.YES_NO_OPTION);
+            System.out.println("charge: " + charge);
+            if (charge != 0) {
+                return;
+            }
             Robot robot = null;
             try {
                 robot = new Robot();
@@ -62,8 +73,8 @@ public class ModifyNumber implements KeyListener {
             } catch (AWTException ex) {
                 ex.printStackTrace();
             }
-            System.out.println("charge: " + charge);
             GoodsPanel.getInstance().clear();
+            InOutPanel.getInstance().reset();
         } else if (keyCode == DELETE) {
             if (GoodsPanel.getInstance().isGoodsListEmpty()) {
                 return;

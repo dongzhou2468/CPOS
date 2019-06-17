@@ -4,19 +4,17 @@
  */
 package chen.pos.welcome.ui;
 
-import chen.pos.welcome.bean.Goods;
-import chen.pos.welcome.bean.Product;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
-import javax.swing.*;
+import javax.swing.UIManager;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.plaf.FontUIResource;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.InputStream;
+
+import chen.pos.welcome.dao.DaoProxy;
 
 import static javax.swing.SwingUtilities.invokeLater;
 
@@ -31,7 +29,10 @@ public class Home {
 
     private static void createAndShowGUI() {
 
-        Color bgColor = new Color(77, 88, 99);
+//        Color bgColor = new Color(77, 88, 99);
+
+        UIManager.put("OptionPane.buttonFont", new FontUIResource(new Font("宋体", Font.PLAIN, 15)));
+        UIManager.put("OptionPane.messageFont", new FontUIResource(new Font("宋体", Font.PLAIN, 20)));
 
         final JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -43,7 +44,6 @@ public class Home {
         frame.getContentPane().add(inOutPanel.getInOutPanel(), LAYOUT_EAST);
         frame.getContentPane().add(goodsPanel.getGoodsPane(), LAYOUT_CENTER);
 
-        // 显示窗口
 //        frame.pack();
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
@@ -60,9 +60,8 @@ public class Home {
     }
 
     private static void startService() {
-        UIManager.put("OptionPane.buttonFont", new FontUIResource(new Font("宋体", Font.PLAIN, 15)));
-        UIManager.put("OptionPane.messageFont", new FontUIResource(new Font("宋体", Font.PLAIN, 20)));
-        UIManager.put("OptionPane.inputFont", new FontUIResource(new Font("宋体", Font.PLAIN, 20)));
+
+        DaoProxy.init();
         GoodsPanel.init();
         InOutPanel.init();
         goodsPanel = GoodsPanel.getInstance();
@@ -74,33 +73,6 @@ public class Home {
                 createAndShowGUI();
             }
         });
-
-        Goods goodsA = new Goods();
-        goodsA.setId("07000300");
-        goodsA.setBarCode("6900000000");
-        goodsA.setName("怡宝555ml");
-        goodsA.setPrice(2f);
-        goodsA.setStock(48);
-        goodsA.setCategory("水");
-        goodsPanel.addToList(goodsA);
-
-        Goods goodsB = new Goods();
-        goodsB.setId("07003011");
-        goodsB.setBarCode("6900000001");
-        goodsB.setName("红牛300ml");
-        goodsB.setPrice(6f);
-        goodsB.setStock(24);
-        goodsB.setCategory("饮料");
-        goodsPanel.addToList(goodsB);
-
-        Goods goodsC = new Goods();
-        goodsC.setId("07308017");
-        goodsC.setBarCode("6900000002");
-        goodsC.setName("怡宝1.5L");
-        goodsC.setPrice(3.5f);
-        goodsC.setStock(24);
-        goodsC.setCategory("水");
-        goodsPanel.addToList(goodsC);
 
 //        for (int i = 0; i < 25; ++i) {
 //            Goods goods = new Goods();
@@ -115,20 +87,8 @@ public class Home {
     }
 
     public static void main(String[] args) {
-//        startService();
+        startService();
 
-        new Home().mybatisTest();
-    }
-
-    private void mybatisTest() {
-        String resource = "mybatis-configuration.xml";
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(resource);
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(is);
-        SqlSession sqlSession = factory.openSession();
-
-        String stmt = "chen.pos.welcome.mapper.ProductMapper.getProduct";
-        Product product = sqlSession.selectOne(stmt,"07000300");
-        System.out.println(product);
-        sqlSession.close();
+//        new Home().mybatisTest();
     }
 }

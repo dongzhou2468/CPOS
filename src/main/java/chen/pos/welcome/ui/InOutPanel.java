@@ -87,6 +87,10 @@ public class InOutPanel {
         number.setText(PREFIX_NUMBER + numberValue);
     }
 
+    float getTotalValue() {
+        return totalValue;
+    }
+
     void reset() {
         total.setText(PREFIX_TOTAL);
         number.setText(PREFIX_NUMBER);
