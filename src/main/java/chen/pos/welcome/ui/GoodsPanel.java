@@ -85,6 +85,10 @@ public class GoodsPanel {
     }
 
     private void addToList(Product product) {
+        if (Home.isNewOrder()) {
+            InOutPanel.getInstance().reset();
+            Home.setNewOrder(false);
+        }
         Vector<String> newGoods = new Vector<String>(Arrays.asList(
                 String.valueOf(++maxGoodsSn),
                 product.getProductCode(),
@@ -160,7 +164,6 @@ public class GoodsPanel {
         goodsCount = 0;
         maxGoodsSn = 0;
         updateUI();
-        InOutPanel.getInstance().reset();
     }
 
     private void updateUI() {

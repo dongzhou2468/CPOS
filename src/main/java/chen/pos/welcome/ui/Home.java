@@ -24,6 +24,9 @@ public class Home {
     private static final String LAYOUT_EAST = "East";
     private static final String LAYOUT_CENTER = "Center";
 
+    static final JFrame frame = new JFrame();
+    static boolean newOrder = false;
+
     private static GoodsPanel goodsPanel = null;
     private static InOutPanel inOutPanel = null;
 
@@ -34,7 +37,6 @@ public class Home {
         UIManager.put("OptionPane.buttonFont", new FontUIResource(new Font("宋体", Font.PLAIN, 15)));
         UIManager.put("OptionPane.messageFont", new FontUIResource(new Font("宋体", Font.PLAIN, 20)));
 
-        final JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         BorderLayout layout = new BorderLayout();
@@ -84,6 +86,14 @@ public class Home {
 //            goods.setCategory("水");
 //            goodsPanel.addToList(goods);
 //        }
+    }
+
+    public static boolean isNewOrder() {
+        return newOrder;
+    }
+
+    public static void setNewOrder(boolean newOrder) {
+        Home.newOrder = newOrder;
     }
 
     public static void main(String[] args) {

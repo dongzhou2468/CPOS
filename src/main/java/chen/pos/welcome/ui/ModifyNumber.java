@@ -22,18 +22,18 @@ public class ModifyNumber implements KeyListener {
 
     private static final String DELETE_LINE_PROMPT = "删除该商品？\n按Enter键确认，按Esc键取消";
     private static final String DELETE_ALL_PROMPT = "删除全部内容？\n按Enter键确认，按Esc键取消";
-    private static final String CHARGE_PROMPT = "应收取：%s元\n再按一次确认，按Esc键取消";
+    private static final String CHARGE_PROMPT = "应收取：%s元\n再按一次继续，按Esc键取消";
 
     public void keyTyped(KeyEvent e) {
-        System.out.println("输入: keyCode: " + e.getKeyCode());
-        System.out.println("输入: keyChar: " + e.getKeyChar());
-        System.out.println("输入: keyText: " + KeyEvent.getKeyText(e.getKeyCode()) + "\n");
+        System.out.println("主页输入: keyCode: " + e.getKeyCode());
+        System.out.println("主页输入: keyChar: " + e.getKeyChar());
+        System.out.println("主页输入: keyText: " + KeyEvent.getKeyText(e.getKeyCode()) + "\n");
     }
 
     public void keyPressed(KeyEvent e) {
-        System.out.println("按下: keyCode: " + e.getKeyCode());
-        System.out.println("按下: keyChar: " + e.getKeyChar());
-        System.out.println("按下: keyText: " + KeyEvent.getKeyText(e.getKeyCode()) + "\n");
+        System.out.println("主页按下: keyCode: " + e.getKeyCode());
+        System.out.println("主页按下: keyChar: " + e.getKeyChar());
+        System.out.println("主页按下: keyText: " + KeyEvent.getKeyText(e.getKeyCode()) + "\n");
 
         int keyCode = e.getKeyCode();
         if (keyCode == F11) {
@@ -59,22 +59,43 @@ public class ModifyNumber implements KeyListener {
             if (GoodsPanel.getInstance().isGoodsListEmpty()) {
                 return;
             }
-            int charge = JOptionPane.showConfirmDialog(null,
+            final JButton button = new JButton("确定");
+            button.addKeyListener(new KeyListener() {
+                public void keyTyped(KeyEvent e) {
+                    System.out.println("收钱提示#输入：" + e.getKeyCode());
+                }
+                public void keyPressed(KeyEvent e) {
+                    System.out.println("收钱提示#按下：" + e.getKeyCode());
+                    if (e.getKeyCode() == DEAL || e.getKeyCode() == ENTER) {
+                        System.out.println("找钱");
+                        JDialog chargeDialog = (JDialog) button.getRootPane().getParent();
+                        System.out.println(chargeDialog);
+                        chargeDialog.dispose();
+                        // 开钱柜
+                        Robot robot = null;
+                        try {
+                            robot = new Robot();
+                            robot.keyPress(KeyEvent.VK_F7);
+                        } catch (AWTException ex) {
+                            ex.printStackTrace();
+                        }
+                        GoodsPanel.getInstance().clear();
+                        Home.setNewOrder(true);
+                    }
+                }
+                public void keyReleased(KeyEvent e) {
+                    System.out.println("收钱提示#松开：" + e.getKeyCode());
+                }
+            });
+            Object[] option = { button };
+            int charge = JOptionPane.showOptionDialog(null,
                     String.format(CHARGE_PROMPT, InOutPanel.getInstance().getTotalValue()),
-                    "", JOptionPane.YES_NO_OPTION);
+                    "", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, option, option[0]);
             System.out.println("charge: " + charge);
             if (charge != 0) {
                 return;
             }
-            Robot robot = null;
-            try {
-                robot = new Robot();
-                robot.keyPress(KeyEvent.VK_F7);
-            } catch (AWTException ex) {
-                ex.printStackTrace();
-            }
-            GoodsPanel.getInstance().clear();
-            InOutPanel.getInstance().reset();
+
         } else if (keyCode == DELETE) {
             if (GoodsPanel.getInstance().isGoodsListEmpty()) {
                 return;
@@ -94,13 +115,14 @@ public class ModifyNumber implements KeyListener {
             System.out.println("delete all: " + deleteAll);
             if (deleteAll == JOptionPane.OK_OPTION) {
                 GoodsPanel.getInstance().clear();
+                InOutPanel.getInstance().reset();
             }
         }
     }
 
     public void keyReleased(KeyEvent e) {
-        System.out.println("松开: keyCode: " + e.getKeyCode());
-        System.out.println("松开: keyChar: " + e.getKeyChar());
-        System.out.println("松开: keyText: " + KeyEvent.getKeyText(e.getKeyCode()) + "\n");
+        System.out.println("主页按下: keyCode: " + e.getKeyCode());
+        System.out.println("主页按下: keyChar: " + e.getKeyChar());
+        System.out.println("主页按下: keyText: " + KeyEvent.getKeyText(e.getKeyCode()) + "\n");
     }
 }
